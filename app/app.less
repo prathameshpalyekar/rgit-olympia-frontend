@@ -1,0 +1,54 @@
+// @import 'components/pure/index.less';
+@import 'components/bootstrap/index.less';
+@import 'components/icons/icons.less';
+@import './variables.less';
+@import 'components/ui/util.less';
+
+body {
+    background-color: #c4c4cc;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover
+{
+    outline:0px !important;
+    box-shadow: none !important;
+}
+
+* {
+    &::selection {
+        background: @brand-primary;
+        color: white;
+    }
+    &::-moz-selection {
+        background: @brand-primary;
+        color: white;
+    }
+}
+
+.container {
+    margin: 0 auto;
+    .header {
+        .-title {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .-sub-title {
+            padding-left: 100px;
+        }
+    }
+}
+
+.app {
+    position: relative;
+    display: block;
+}
