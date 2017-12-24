@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Config from '../../../config';
 import cx from 'classnames';
-import './Home.less';
 import HomePanel from './HomePanel/HomePanel';
 import RegisterPanel from './RegisterPanel/RegisterPanel';
 import CategoryPanel from './CategoryPanel/CategoryPanel';
 import RegisterForm from './RegisterForm/RegisterForm';
+import './Home.less';
 
 const pageTabs = [
     { id: 'home', title: 'Home' },
@@ -13,7 +13,7 @@ const pageTabs = [
     { id: 'catergories', title: 'Categories & Prizes' },    
 ];
 
-class Home extends Component {
+export default class Home extends Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -66,11 +66,3 @@ class Home extends Component {
         );
     }
 }
-
-// const mapDispatchtoProps = (dispatch) => {
-//     return {
-//         dispatch
-//     };
-// };
-
-export default Home;

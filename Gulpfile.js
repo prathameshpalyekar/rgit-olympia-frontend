@@ -34,7 +34,7 @@ gulp.task("webpack:build", function(callback) {
             colors: true
         }));
         gulp.src('assets/**/*')
-        .pipe(gulp.dest('/Users/prathameshpalyekar/workspace/happo/happo-admin-backend/assets'));
+        .pipe(gulp.dest('../rgit-olympia-backend/public/assets'));
         callback();
     });
 });
