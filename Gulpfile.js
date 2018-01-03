@@ -7,7 +7,7 @@ var webpackConfig = require("./webpack.config.js");
 
 var browserSync = require('browser-sync').create();
 
-const WEBPACK_SERVER_PORT = 7001;
+const WEBPACK_SERVER_PORT = 8001;
 
 const paths = {
     All: ['app/**/*.js', 'app/**/*.jsx']
@@ -90,6 +90,11 @@ gulp.task("webpack-dev-server", function(callback) {
         stats: {
             colors: true
         },
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:5000/'
+            }
+        }
     }).listen(WEBPACK_SERVER_PORT, "0.0.0.0", function(err) {
         if(err) throw new gutil.PluginError("webpack-dev-server", err);
         gutil.log("[webpack-dev-server]", "http://localhost:" + WEBPACK_SERVER_PORT + "/webpack-dev-server/index.html");

@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Config from '../../../../config';
+import Formsy from 'formsy-react';
+import FC from 'components/Formsy';
+import cx from 'classnames';
+import Alert from 'react-s-alert';
+import { AgeGroups, GenderOptions} from '../../Constants/Constants';
+import './RegisterForm.less';
+const generateTxnId = require("uuid-pure").newId;
+const PAYMENT_CODE = '/assets/' + require('assets/images/payment_code.png');
 
 export default class RegisterForm extends Component {
     constructor (props) {
@@ -10,80 +19,84 @@ export default class RegisterForm extends Component {
             phoneNumber: null,
             gender: null,
             ageGroup: null,
+            txnid: null,
         };
-        this.onChange = this.onChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.addUser = this.addUser.bind(this);
     }
 
-    onChange(event) {
-        const { name, value } = event.target;
+    handleChange(name, value) {
         this.setState({[name]: value});
     }
 
-    onSubmit(event) {
-        event.preventDefault();
-        const { name, email, phoneNumber, gender, ageGroup } = this.state;
-        const user = { name, email, phoneNumber, gender, ageGroup };
-        this.addUser(user);
+    onSubmit(model) {
+        const { name, email, phoneNumber, gender, ageGroup, txnid } = model;
+        this.setState({ name, email, phoneNumber, gender, ageGroup, txnid });
+        if (name && email && phoneNumber && gender && ageGroup && txnid) {
+            this.addUser(model);
+        } else {
+            Alert.error('Please fill complete information.');
+        }
     }
 
     addUser(data) {
-        let url = 'api/addUser';
+        data.id = data.ageGroup + '_' + generateTxnId(8);
         axios({
-            url: url,
+            url: Config.BASE_URL + 'addUser',
             method: 'post',
             responseType: 'json',
-            data: data
+            data,
         }).then((xhrResponse) => {
-            let response = xhrResponse.data;
-            console.log(xhrResponse)
-            // if (response.success) {
-            //     dispatch(receive(response.data));
-            // } else {
-            //     dispatch(error(response.message));
-            // }
+            const { data } = xhrResponse;
+            if (data.success) {
+                this.setState({
+                    showResponse: true,
+                });
+            }
         }).catch(xhrResponse => {
             console.log(xhrResponse)
-            // let response = xhrResponse.data;
-            // dispatch(error(response.message));
         });
     }
 
     render() {
+        const { name, email, phoneNumber, gender, ageGroup, showResponse, txnid } = this.state;
+        const submitButtonClass = cx('btn', 'btn-default', {
+            'btn-primary': name && email && phoneNumber && gender && ageGroup && txnid
+        });
+
         return (
             <div className="register-form container">
                 <div className="row">
-                    <form className="col-sm-6 col-sm-offset-3">
-                        <div className="form-group">
-                            <label>Name (Required)</label>
-                            <input type="name" className="form-control" placeholder="Enter Name" name="name" required onChange={this.onChange}></input>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input type="email" className="form-control" id="email" placeholder="Enter Email" name="email" onChange={this.onChange}></input>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="phoneNumber">Contact Number (Required)</label>
-                            <input type="number" className="form-control" id="phoneNumber" placeholder="Enter contact number" name="phoneNumber" onChange={this.onChange}></input>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="gender">Gender (Required)</label>
+                    {showResponse ? 
+                        <div className="col-sm-6 col-sm-offset-3 text-center register-response">
+                            <div>Your application has been submitted successfully. Your transaction ID is</div>
+                            <div className="-txn-code">{txnid}</div>
+                            <div>Please note that you will receive acceptance mail along with participation code. Please provide it at the time of event.</div>
+                            <div>Thank you for participation.</div>
+                        </div> :
+                        <Formsy.Form className="login-form" onValidSubmit={this.onSubmit}>
+                            <FC.Input layout="vertical" label="Name" name="name" placeholder="Enter Name" type="text" required onChange={this.handleChange}/>
+                            <FC.Input layout="vertical" label="Email" name="email" placeholder="Enter Email" type="email" required onChange={this.handleChange}/>
+                            <FC.Input layout="vertical" label="Contact Number" name="phoneNumber" placeholder="Enter contact number" type="number" required onChange={this.handleChange}/>
+                            <FC.RadioGroup options={GenderOptions} name="gender" label="Gender" layout="vertical" required onChange={this.handleChange} value=""/>
+                            <FC.Select name="ageGroup" label="Age Group" type="text" options={AgeGroups} layout="vertical" onChange={this.handleChange} required/>
                             <div>
-                                <label className="radio-inline"><input type="radio" name="gender" value="male" onChange={this.onChange}/>Male</label>
-                                <label className="radio-inline"><input type="radio" name="gender" value="female" onChange={this.onChange}/>Female</label>
+                                <div className="-note">
+                                    <div className="-header">Please Note: </div>
+                                    <div className="-info"><b>Please scan following code or use Mobile number for payment using PayTM app.</b></div>
+                                    <div className="-info text-center">Mobile No : <b className="-mob-no">8286939717</b></div>
+                                    <div className="-info"><b>Amount to be paid: <span className="-high-light">Rs. 500</span></b></div>
+                                    <div className="-info"><b>After successful payemt of fee, please enter transaction Id in Transaction ID field.</b></div>
+                                </div>
+                                <div className="row">
+                                    <img className="img-responsive img-rounded col-sm-6 col-sm-offset-3" src={PAYMENT_CODE}></img>
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="ageGroup">Age Group (Required)</label>
-                            <select className="form-control" name="ageGroup" onChange={this.onChange}>
-                                <option>Under 8</option>
-                                <option>Under 12</option>
-                                <option>Under 16</option>
-                                <option>Open</option>
-                            </select>
-                        </div>
-                        <button type="submit" className="btn btn-default" onClick={this.onSubmit}>Submit</button>
-                    </form>
+                            <FC.Input layout="vertical" label="Transaction ID" name="txnid" placeholder="Enter Transaction ID" type="text" required onChange={this.handleChange}/>
+                            <button type="submit" className={submitButtonClass}>Submit</button>
+                        </Formsy.Form>
+                    }
                 </div>
             </div>
         )
