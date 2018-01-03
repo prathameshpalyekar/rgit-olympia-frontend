@@ -10,7 +10,6 @@ export default function HomePanel() {
             <div className="-text-over-image">
                 <div className="-caption">Are you ready for more?</div>
                 <div className="-sub-caption">“I don’t believe in psychology. I believe in good moves.” – Bobby Fischer</div>
-                <button className="btn btn-primary">I'm Ready</button>
             </div>
             <div className="-info col-sm-offset-3 col-sm-6">
                 <div className="-header">
@@ -21,7 +20,7 @@ export default function HomePanel() {
                     <li>
                         The cup is organized under
                         <div className="-organization">
-                            MUMBAI SUBURBAN CHESS ASSOCIATION
+                            MUMBAI SUBURBAN DISTRICT CHESS ASSOCIATION
                         </div>
                     </li>
                     <li>There are plenty of PRIZES in each category. </li>

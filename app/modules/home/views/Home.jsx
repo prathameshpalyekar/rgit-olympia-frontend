@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import Config from '../../../config';
 import cx from 'classnames';
-import './Home.less';
 import HomePanel from './HomePanel/HomePanel';
 import RegisterPanel from './RegisterPanel/RegisterPanel';
 import CategoryPanel from './CategoryPanel/CategoryPanel';
+import RulesPanel from './RulesPanel/RulesPanel';
 import RegisterForm from './RegisterForm/RegisterForm';
+import './Home.less';
 
 const pageTabs = [
     { id: 'home', title: 'Home' },
     { id: 'register', title: 'Register' },
-    { id: 'catergories', title: 'Categories & Prizes' },    
+    { id: 'catergories', title: 'Categories & Prizes' },
+    { id: 'rules', title: 'Rules'},
 ];
 
-class Home extends Component {
+export default class Home extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            activeTab: 'register',
-            activePanel: 'registerForm',
+            activeTab: 'home',
+            activePanel: 'home',
         };
         this.openRegisterForm = this.openRegisterForm.bind(this);
     }
@@ -38,9 +40,11 @@ class Home extends Component {
         } else if (activePanel === 'register') {
             return (<RegisterPanel openRegisterForm={this.openRegisterForm}/>);
         } else if (activePanel === 'catergories') {
-            return (<CategoryPanel/>);
+            return (<CategoryPanel openRegister={() => {this.selectTab('register')}}/>);
         } else if (activePanel === 'registerForm') {
             return (<RegisterForm/>);
+        } else if (activePanel === 'rules') {
+            return (<RulesPanel/>);
         }
     }
     
@@ -66,11 +70,3 @@ class Home extends Component {
         );
     }
 }
-
-// const mapDispatchtoProps = (dispatch) => {
-//     return {
-//         dispatch
-//     };
-// };
-
-export default Home;
